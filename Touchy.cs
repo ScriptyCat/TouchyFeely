@@ -1,8 +1,6 @@
 ﻿using IllusionPlugin;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using System.IO;
 
@@ -157,21 +155,13 @@ namespace TouchyFeely {
         }
 
         /// <param name="level"></param>
-        public void OnLevelWasLoaded(int level) {
-            var hscene = GameObject.FindObjectOfType<H_Scene>();
-            if (hscene != null) {
-
-                // hscene.ChangeMap
-                // hscene.ChangeState
-                // etc.
-            }
+        public void OnLevelWasLoaded(int level) {            
         }
 
         /// <param name="level"></param>
         public void OnLevelWasInitialized(int level) {
         }
 
-        //string prevHit = "";
         GameObject[] feelNodes;
         bool isTouching = false;
         bool isOn = false;
@@ -217,7 +207,6 @@ namespace TouchyFeely {
                         if (human.sex != Human.SEX.FEMALE)
                             return;
 
-                        //File.WriteAllLines(Application.dataPath + "/hit.txt", new string[] { human.transform.name });
                     } else {
                         return;
                     }
@@ -235,17 +224,7 @@ namespace TouchyFeely {
                     List<GameObject> tmpgos = new List<GameObject>();
                     List<string> dbgs = new List<string>();
                     for (int p = 0; p < 2; p++) {
-                        //nodevisualization
-                        /*
-                        dbgs.Add(dbs.Length.ToString());
-                        dbgs.Add(" ");
-                        dbgs.Add(" - dbs[p] " + p.ToString());
-                        dbgs.Add("force: " + dbs[p].m_Force.x.ToString() + ", " + dbs[p].m_Force.y.ToString() + ", " + dbs[p].m_Force.z.ToString());
-                        dbgs.Add("stiff: " + dbs[p].m_Stiffness.ToString());
-                        dbgs.Add("elas: " + dbs[p].m_Elasticity.ToString());
-                        dbgs.Add("damp: " + dbs[p].m_Damping.ToString());
-                        dbgs.Add(" ");
-                        */
+                        //node visualization
                         for (int i = 0; i < 2; i++) {
                             GameObject tmpSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                             float rr = dbs[p].m_Radius * sphereScale;
@@ -261,7 +240,6 @@ namespace TouchyFeely {
                             tmpgos.Add(tmpSphere);
                         }
                     }
-                    //File.WriteAllLines(Application.dataPath + "/andbg.txt", dbgs.ToArray());
 
                     feelBall = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     GameObject.Destroy(feelBall.GetComponent<Collider>());
@@ -279,7 +257,7 @@ namespace TouchyFeely {
                         dbs[i].m_Colliders.Add(feelBallColl);
                     }
                     feelNodes = tmpgos.ToArray();
-                    //File.WriteAllLines(Application.dataPath + "/node.txt", new string[] { " " });
+                    
                 } else {
                     //if we are touching
                     if (feelBall) {
@@ -296,7 +274,6 @@ namespace TouchyFeely {
                             timeOut = 0;
                             float depth = mouseScale / 2f - mouseDepth;
                             feelBall.transform.position = Vector3.Lerp(feelBall.transform.position, hitt.point + hitt.normal * depth, Time.deltaTime * 14f);
-                            //File.WriteAllLines(Application.dataPath + "/hit.txt", new string[] { mainParent.ToString() });
                         } else {
                             timeOut++;
                             feelBallColl.enabled = false;
@@ -318,21 +295,9 @@ namespace TouchyFeely {
                 }
             } else {
                 DestroyCurrentFeel();
-            }
+            }         
 
-            /*
-            if (Input.GetKey(KeyCode.X)) {
-                List<string> dbgs = new List<string>();
-                Transform[] boobTrans = GameObject.Find("cf_J_Mune00").GetComponentsInChildren<Transform>();
-                foreach (Transform trn in boobTrans) {
-                    if (trn.localScale != Vector3.one && trn.name != "LiquidCollider")
-                        dbgs.Add(trn.name + " : (" + trn.localScale.x + ", " + trn.localScale.y + ", " + trn.localScale.z + ")");
-                }
-                //File.WriteAllLines(Application.dataPath + "/transdbg.txt", dbgs.ToArray());
-            }
-            */
-
-            //end method
+            //End Update
         }
         GameObject feelBall;
         DynamicBoneCollider feelBallColl;
@@ -341,7 +306,6 @@ namespace TouchyFeely {
 
         void DestroyCurrentFeel() {
             if (isTouching) {
-                //destroy
                 isTouching = false;
                 if (feelNodes != null) {
                     foreach (GameObject go in feelNodes) {
@@ -377,9 +341,9 @@ namespace TouchyFeely {
                                 buttL.m_Nodes.Add(tr);
                                 buttL.m_Colliders.Clear();
                                 buttL.m_Colliders.Add(feelBallColl);
-                                buttL.m_Stiffness = 0.3f;
-                                buttL.m_Elasticity = 0.3f;
-                                buttL.m_Damping = 0.3f;
+                                buttL.m_Stiffness = buttStif;
+                                buttL.m_Elasticity = buttElas;
+                                buttL.m_Damping = buttDamp;
                                 GameObject tmpSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                                 float rr = buttL.m_Radius * buttScale;
                                 tmpSphere.transform.localScale = new Vector3(rr + sphereSize.x, rr + sphereSize.y, rr + sphereSize.z);
